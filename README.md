@@ -2,6 +2,10 @@
   <img src="./assets/readme/hero.svg" width="100%" alt="selector-dev — Alt+S dormant visual element picker, live CSS tweaker, and workspace feedback queue built on oil-oil/selector">
 </p>
 
+<p align="center">
+  <strong>English</strong> | <a href="./README.zh-CN.md">简体中文</a>
+</p>
+
 A dev-server bridge, live CSS tweaker, and self-contained agent skill built on top of **[oil-oil/selector](https://github.com/oil-oil/selector)** — pick elements in your Vite or Next.js app, tune spacing/typography/colors live, and send exact `styleDiff:` batches straight to `.tmp/selector-queue.md`.
 
 <p align="center">
