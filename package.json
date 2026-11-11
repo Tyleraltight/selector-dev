@@ -1,9 +1,38 @@
 {
-  "name": "selector",
-  "version": "0.4.1",
-  "private": true,
+  "name": "selector-dev",
+  "version": "0.5.0",
+  "description": "Dormant Alt+S visual element picker, live CSS tweaker (styleDiff), and zero-dependency Vite/Next.js workspace feedback queue built on oil-oil/selector.",
+  "license": "MIT",
+  "author": "Tyleraltight (based on oil-oil/selector)",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/Tyleraltight/selector-dev.git"
+  },
+  "keywords": [
+    "selector",
+    "ai-coding",
+    "vite-plugin",
+    "nextjs",
+    "visual-editor",
+    "claude-code",
+    "agent-skill"
+  ],
+  "exports": {
+    "./vite": {
+      "import": "./adapters/vite.mjs",
+      "require": "./adapters/vite.js"
+    },
+    "./next": {
+      "import": "./adapters/next.mjs",
+      "require": "./adapters/next.js"
+    }
+  },
   "scripts": {
     "build": "node scripts/build.js",
-    "check": "npm run build"
+    "sync:skill": "node skills/selector-dev/scripts/sync_runtime.mjs --source .",
+    "demo": "node scripts/demo.js",
+    "test": "node tests/dev-bridge.test.mjs",
+    "test:skill": "node --test skills/selector-dev/tests/smoke.test.mjs",
+    "check": "npm run build && npm run sync:skill && npm test && npm run test:skill"
   }
 }

@@ -1,0 +1,26 @@
+interface:
+  display_name: "Selector Dev Bridge"
+  short_description: "Visual UI picker, live CSS tweaker, and .tmp/selector-queue.md workflow for Vite & Next.js"
+  default_prompt: "Consume .tmp/selector-queue.md on 改ui or wire self-contained Selector dev bridge into Vite/Next.js projects."
+compatibility:
+  canonical_format: "agent-skills"
+  adapter_targets:
+    - "openai"
+    - "claude"
+    - "generic"
+    - "vscode"
+  activation:
+    mode: "auto"
+    paths: []
+  execution:
+    context: "inline"
+    shell: "bash"
+  trust:
+    source_tier: "local"
+    remote_inline_execution: "forbid"
+    remote_metadata_policy: "allow-metadata-only"
+  degradation:
+    openai: "metadata-adapter"
+    claude: "neutral-source-plus-adapter"
+    generic: "neutral-source"
+    vscode: "agent-skills-source-with-vscode-notes"

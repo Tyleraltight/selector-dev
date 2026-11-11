@@ -1,99 +1,90 @@
 <p align="center">
-  <img src="assets/readme/hero.svg" width="100%" alt="Selector — point at any web element and copy structured context for your AI coding assistant">
+  <img src="./assets/readme/hero.svg" width="100%" alt="selector-dev — Alt+S dormant visual element picker, live CSS tweaker, and workspace feedback queue built on oil-oil/selector">
 </p>
 
-A bookmarklet for selecting web elements and copying structured context into Claude Code, Codex, Cursor, or any AI coding assistant.
-
-https://github.com/user-attachments/assets/fb8e9271-d7e0-487f-b013-106cc4c5a40f
-
-## Install
-
-1. Visit the **[install page](https://oil-oil.github.io/selector/)**
-2. Drag the **Selector** button to your bookmarks bar (one-time)
-3. Done
-
-The install page follows your browser language and includes an English / Chinese toggle.
-
-## Usage
-
-Open any web page, click the **Selector** bookmark.
-
-| Action | What it does |
-|---|---|
-| **Click** | Select an element |
-| **Shift + Click** | Add to selection |
-| **Drag** | Marquee select multiple elements |
-| **↑ / ↓** | Navigate to parent / child element |
-| **← / →** | Navigate to previous / next sibling |
-| **✎ button** | Add per-element instruction |
-| **⌘C** | Copy prompt to clipboard |
-| **⌘M** | Copy selected content as Markdown |
-| **⌘⇧C** | Copy selected area screenshot |
-| **⌘Z** | Undo last selection change |
-| **F2** | Pause / resume element selection |
-| **Esc** | Clear the current selection or close the current popover |
-
-Copied prompts include the element name, stable locator, semantic location, and React details, with CSS, layout, parent, or HTML context added only when useful. Long URLs are reduced to the route and key query values.
-
-Enable **Sharingan mode** for higher-fidelity recreation. **⌘C** then captures document context, geometry, sanitized DOM, effective styles and states, fonts, animations, media, React details, and nearby context. Small reports go to the clipboard; large ones download as `.md` files.
-
-With **Screenshot + text combined** enabled, **⌘C** copies the prompt and selected-area screenshot, downloads the PNG, and adds its local path to the prompt for text-only AI inputs.
-
-## Example output
-
-```
-Page: https://example.com/dashboard?tab=overview
-
-1. Hero "Welcome to the Dashboard" <h1>
-   selector: [data-testid="hero-title"]
-   locator: heading "Welcome to the Dashboard"
-   source: src/components/Hero.tsx:12
-   react: Layout › Hero
-   instruction: Make this red and larger
-
-2. nav "Home Settings Profile Logout" <nav>
-   locator: nav "Home Settings Profile Logout"
-   inside: main "Dashboard"
-   instruction: Add an "Analytics" link after "Settings"
-```
-
-For long filtered pages, the copied prompt is shortened like this:
-
-```
-Page: http://localhost:3000/campaigns/2079fa76-9c77-4900-b11a-086f4464ff2b/settlement
-Query: date_from=2026-05-23, date_to=2026-06-22, creator_ids ×2
-```
-
-## How it works
-
-Selector injects its compiled assets into the current page and runs entirely client-side — no data is sent anywhere. The build bundles the editor and Sharingan mode into the bookmark, so it works offline after installation.
-
-## Selector Pro
-
-Use **[Selector Pro](https://selector-pro.org/)** for one-shortcut access across tabs, complete captures without dialogs, and synced settings.
+A dev-server bridge, live CSS tweaker, and self-contained agent skill built on top of **[oil-oil/selector](https://github.com/oil-oil/selector)** — pick elements in your Vite or Next.js app, tune spacing/typography/colors live, and send exact `styleDiff:` batches straight to `.tmp/selector-queue.md`.
 
 <p align="center">
-  <a href="https://selector-pro.org/"><img src="./assets/readme/selector-pro.svg" width="100%" alt="Selector Pro — a better Selector that stays active across tabs, captures complete elements without dialogs, and syncs settings"></a>
+  <img src="./assets/readme/workflow.svg" width="100%" alt="selector-dev three-step workflow: Browser Alt+S live tweak, same-origin dev bridge, and agent source edit loop">
 </p>
 
-## Development
+## Why selector-dev
+
+- **Dormant until needed (`Alt+S`)**: Renders only a quiet bottom-right pill during development without adding `data-ai-id` attributes to your DOM until woken.
+- **Unified draggable popover**: Combine free-text notes (`instruction:`) and live CSS tweaking (`padding`, `margin`, `gap`, `font-size`, `font-weight`, `border-radius`, `opacity`, `width`, `height`, `color`, `background-color`) in one draggable panel.
+- **Clean `styleDiff:` + HMR safety**: Exported context snapshots the underlying DOM before temporary preview overrides (`withCleanTweaks`), and clicking **Send to Workspace** reverts inline preview styles immediately so Vite/Next.js HMR shows your real source changes.
+- **Zero-clipboard multi-workspace safety**: Each dev server writes only to `.tmp/selector-queue.md` under its own `process.cwd()`. Switch to that project's agent chat and type `改ui` (or `check ui`).
+- **Self-contained Agent Skill (`skills/selector-dev`)**: Ships prebuilt runtime assets, zero-dependency adapters, TypeScript declarations, and auto-detection/injection scripts for Vite and Next.js (App Router & Pages Router).
+
+## Quick start
+
+### Option A — Auto-wire with the bundled Agent Skill
+
+Install or copy `skills/selector-dev` into your agent skills directory (`~/.claude/skills/selector-dev` or `~/.agents/skills/selector-dev`), or run the injector directly against any Vite or Next.js project:
 
 ```bash
-git clone https://github.com/oil-oil/selector.git
-cd selector
-npm ci
-npm run build
-# Source files:
-#   assets/editor.css     — styles for the in-page editor UI
-#   src/*.js              — editor source fragments assembled by scripts/build.js
-#   src/sharingan.js      — Sharingan-mode replication report, inlined at build time
-# Push to main — GitHub Actions builds dist/ and deploys GitHub Pages
+# 1. Preview detected framework and planned changes
+node skills/selector-dev/scripts/inject_selector.mjs --target /path/to/your-app
+
+# 2. Inject self-contained runtime into .tmp/selector-dev/ and wire config/routes
+node skills/selector-dev/scripts/inject_selector.mjs --target /path/to/your-app --apply
+
+# 3. Revert cleanly when finished
+node skills/selector-dev/scripts/inject_selector.mjs --target /path/to/your-app --revert --apply
 ```
 
-<p align="center">
-  <a href="https://github.com/oil-oil/beautify-github-readme"><img src="./assets/readme/made-with-beautify.svg" width="300" alt="README made with beautify-github-readme"></a>
-</p>
+### Option B — Wire manually in Vite or Next.js
+
+See [docs/usage-dev-bridge.md](./docs/usage-dev-bridge.md) and [skills/selector-dev/references/adapters.md](./skills/selector-dev/references/adapters.md) for copy-paste Vite (`selectorDevPlugin`), Next.js App Router (`createNextAppHandler`), and Next.js Pages Router (`createNextPagesHandler`) snippets.
+
+### Daily workflow
+
+1. Start `vite dev` or `next dev`. Normal page clicks stay untouched while Selector rests in the bottom-right corner.
+2. Press `Alt+S` (or click the pill) to wake Selector.
+3. Click an element and open the pencil icon to annotate and live-tweak styles.
+4. Click **Send to Workspace** (`投递到工作区`).
+5. In your AI coding session for that repo, send `改ui` to apply every batch from `.tmp/selector-queue.md` to real source styles and clear the queue.
+
+## Example queue batch
+
+```markdown
+<!-- selector-batch: 2026-11-11T05:00:00.000Z -->
+## UI Feedback Batch #1 (05:00:00)
+- Page: http://localhost:5173/
+- Items: 1
+
+````text
+Page: http://localhost:5173/
+Viewport: 1280x800
+
+Selected Elements:
+1. button#hero-btn
+   source: src/components/Hero.tsx:42
+   selector: button#hero-btn
+   styleDiff: padding-top: 8px -> 24px; font-size: 14px -> 18px
+   instruction: Match primary CTA height to the section scale
+````
+```
+
+## Security and verification
+
+- **Same-origin & DNS Rebinding defense**: Rejects `Sec-Fetch-Site: cross-site`, non-loopback `Host` / `Origin` headers, mismatched `Origin`, non-JSON `Content-Type`, and payloads over 1 MB (draining stream before returning HTTP `413`).
+- **Dev-only execution**: Vite plugin uses `apply: "serve"`; Next.js handlers return `404` whenever `process.env.NODE_ENV !== "development"`.
+- **Bookmarklet compatibility preserved**: `index.html` + `payload-00..07.css` remain intact and `window.__SELECTOR_DEV__` stays isolated from `window.__SELECTOR_HOST__`.
+
+Run the full local suite (build, skill runtime sync, adapter unit tests, headless Chrome CDP E2E, and skill smoke tests):
+
+```bash
+npm run check
+npm run demo
+```
+
+## Upstream attribution
+
+This project builds directly upon **[Selector](https://github.com/oil-oil/selector)** created by **[oil-oil](https://github.com/oil-oil)**. All core bookmarklet selection, locator generation, React source detection, Sharingan capture, and `HOST_CONTRACT` seam architecture come from the upstream repository.
+
+`selector-dev` extends that foundation with dormant `Alt+S` dev-server lifecycle, the unified live CSS tweaker (`styleDiff:`), zero-dependency Vite/Next.js adapters, and the self-contained `skills/selector-dev` workflow.
 
 ## License
 
-MIT
+MIT — see [LICENSE](./LICENSE).
